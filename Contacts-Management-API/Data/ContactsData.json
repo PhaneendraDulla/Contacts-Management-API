@@ -1,0 +1,38 @@
+﻿[
+    {
+        "Id": 1,
+        "FirstName": "Alex",
+        "LastName": "BlaBla",
+        "Email": "alex.blabla@aol.at"
+    },
+    {
+        "Id": 2,
+        "FirstName": "Otto",
+        "LastName": "Blubb",
+        "Email": "otto.blubb@dsl.de"
+    },
+    {
+        "Id": 3,
+        "FirstName": "Peter",
+        "LastName": "Pan",
+        "Email": "peter.pan@neverland.com"
+    },
+    {
+        "Id": 4,
+        "FirstName": "John",
+        "LastName": "Doe",
+        "Email": "john_doe@gmail.com"
+    },
+    {
+        "Id": 5,
+        "FirstName": "Alice",
+        "LastName": "Smith",
+        "Email": "alice-smith01@outlook.com"
+    },
+    {
+        "Id": 6,
+        "FirstName": "Bob",
+        "LastName": "Johnson",
+        "Email": "bob$Johnson@yahoo.com"
+    }
+]
