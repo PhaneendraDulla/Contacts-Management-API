@@ -4,6 +4,6 @@ namespace Contacts_Management_API.Handlers.CommandHandlers
 {
     public interface IUpdateContactCommandHandler
     {
-        void UpdateContact(Contact conact);
+        Task<IResponse> UpdateContact(Contact conact);
     }
 }

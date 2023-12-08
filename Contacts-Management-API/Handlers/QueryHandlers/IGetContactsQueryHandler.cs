@@ -4,7 +4,7 @@ namespace Contacts_Management_API.Handlers.QueryHandlers
 {
     public interface IGetContactsQueryHandler
     {
-        Task<List<Contact>> GetAllContacts();
-        Task<Contact?> GetContactById(int Id);
+        Task<IResponse> GetAllContacts();
+        Task<IResponse> GetContactById(int Id);
     }
 }

@@ -4,37 +4,44 @@ using Newtonsoft.Json;
 
 namespace Contacts_Management_API.Handlers.CommandHandlers
 {
-    public class AddContactCommandHandler : IAddContactCommandHandler
+    public class DeleteContactCommandHandler : IDeleteContactCommandHandler
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly ILogger<AddContactCommandHandler> _logger;
+        private readonly ILogger<DeleteContactCommandHandler> _logger;
         private readonly IGetContactsQueryHandler _getContactsQueryHandler;
 
-        public AddContactCommandHandler(ILogger<AddContactCommandHandler> logger, IWebHostEnvironment webHostEnvironment, IGetContactsQueryHandler getContactsQueryHandler)
+        public DeleteContactCommandHandler(ILogger<DeleteContactCommandHandler> logger, IWebHostEnvironment webHostEnvironment, IGetContactsQueryHandler getContactsQueryHandler)
         {
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
             _getContactsQueryHandler = getContactsQueryHandler;
         }
-        public async Task<IResponse> AddContact(Contact newContact)
+        public async Task<IResponse> DeleteContact(int Id)
         {
             var response = new CommandResponse();
             try
             {
-                _logger.LogInformation("Processing AddContact");
+                _logger.LogInformation("Processing DeleteContact");
 
                 var rootPath = _webHostEnvironment.ContentRootPath;
                 var fullPath = Path.Combine(rootPath, "Data/ContactsData.json");
 
                 var existingContactsResponse = await _getContactsQueryHandler.GetAllContacts() as QueryResponseMultiple<Contact>;
                 var existingContacts = existingContactsResponse?.Items.ToList();
-                newContact.Id = existingContacts?.Count > 0 ? existingContacts.Max(x => x.Id) + 1 : 1;
-
-                existingContacts?.Add(newContact);
+                var contactToDelete = existingContacts?.FirstOrDefault(c => c.Id == Id);
+                if (contactToDelete == null)
+                {
+                    _logger.LogInformation("No contact found with given Id");
+                    response.ErrorMessage = "No contact found with given Id";
+                    response.ErrorCode = -1;
+                    return response;
+                }
+               
+                existingContacts?.Remove(contactToDelete);
                 var updatedJsonData = JsonConvert.SerializeObject(existingContacts, Formatting.Indented);
                 File.WriteAllText(fullPath, updatedJsonData);
 
-                _logger.LogInformation("Contact Created");
+                _logger.LogInformation("Contact Deleted");
                 return response;
             }
             catch (Exception ex)

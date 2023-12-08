@@ -14,8 +14,9 @@ namespace Contacts_Management_API.Handlers.QueryHandlers
             _logger = logger;
         }
 
-        public async Task<List<Contact>> GetAllContacts()
+        public async Task<IResponse> GetAllContacts()
         {
+            var response = new QueryResponseMultiple<Contact>();
             try
             {
                 _logger.LogInformation("Processing GetAllContacts");
@@ -26,27 +27,37 @@ namespace Contacts_Management_API.Handlers.QueryHandlers
                 if (string.IsNullOrWhiteSpace(jsonData))
                 {
                     _logger.LogInformation("No data is present");
-                    return new List<Contact>();
+                    response.ErrorMessage = "No data is present";
+                    response.ErrorCode = -1;
+                    return response;
                 }
 
                 var contacts = JsonConvert.DeserializeObject<List<Contact>>(jsonData);
                 if (contacts == null || contacts.Count == 0)
                 {
                     _logger.LogInformation("No data is present");
-                    return new List<Contact>();
+                    response.ErrorMessage = "No data is present";
+                    response.ErrorCode = -1;
+                    return response;
                 }
 
-                return contacts;
+                _logger.LogInformation("Contacts retrieved");
+                response.TotalItems = contacts.Count;
+                response.Items = contacts;
+                return response;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
-                return new List<Contact>();
+                response.ErrorMessage = ex.Message;
+                response.ErrorCode = -1;
+                return response;
             }
         }
 
-        public async Task<Contact?> GetContactById(int Id)
+        public async Task<IResponse> GetContactById(int Id)
         {
+            var response = new QueryResponseSingle<Contact>();
             try
             {
                 _logger.LogInformation("Processing GetContactById for Id: {0}", Id);
@@ -57,24 +68,34 @@ namespace Contacts_Management_API.Handlers.QueryHandlers
                 if (string.IsNullOrWhiteSpace(jsonData))
                 {
                     _logger.LogInformation("No data is present");
-                    return null;
+                    response.ErrorMessage = "No data is present";
+                    response.ErrorCode = -1;
+                    return response;
                 }
 
                 var contacts = JsonConvert.DeserializeObject<List<Contact>>(jsonData);
                 if (contacts == null || contacts.Count == 0)
                 {
                     _logger.LogInformation("No data is present");
-                    return null;
+                    response.ErrorMessage = "No data is present";
+                    response.ErrorCode = -1;
+                    return response;
                 }
 
                 var contact = contacts.FirstOrDefault(x => x.Id == Id);
 
-                return contact;
+                _logger.LogInformation("Contact retrieved");
+               
+                response.Item = contact;
+
+                return response;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
-                return null;
+                response.ErrorMessage = ex.Message;
+                response.ErrorCode = -1;
+                return response;
             }
         }
     }

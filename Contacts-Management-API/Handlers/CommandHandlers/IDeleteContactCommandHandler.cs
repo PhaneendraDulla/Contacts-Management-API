@@ -4,6 +4,6 @@ namespace Contacts_Management_API.Handlers.CommandHandlers
 {
     public interface IDeleteContactCommandHandler
     {
-        void DeleteContact(int Id);
+        Task<IResponse> DeleteContact(int Id);
     }
 }
