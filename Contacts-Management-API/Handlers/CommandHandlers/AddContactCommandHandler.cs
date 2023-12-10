@@ -28,7 +28,14 @@ namespace Contacts_Management_API.Handlers.CommandHandlers
 
                 var existingContactsResponse = await _getContactsQueryHandler.GetAllContacts() as QueryResponseMultiple<Contact>;
                 var existingContacts = existingContactsResponse?.Items.ToList();
-                newContact.Id = existingContacts?.Count > 0 ? existingContacts.Max(x => x.Id) + 1 : 1;
+                if (existingContacts?.Count == 0)
+                {
+                    newContact.Id = 0;
+                }
+                else
+                {
+                    newContact.Id = (int)(existingContacts?.Max(x => x.Id) + 1);
+                }
 
                 existingContacts?.Add(newContact);
                 var updatedJsonData = JsonConvert.SerializeObject(existingContacts, Formatting.Indented);
