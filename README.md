@@ -20,12 +20,14 @@ This Web API manages the contact Information
 
 ## Application Run:
 
-### Profiles: (I have used IIS Express Profile and its respective port in UI Project)
+### Profiles: 
 - **http**: Runs on `http://localhost:5153` with Swagger UI.
 - **https**: Runs on `https://localhost:7092` and `http://localhost:5153` with Swagger UI.
 - **IIS Express**: Deploys via IIS Express with Swagger UI. It runs on  `http://localhost:44367`
 
-Select IIS profile in your IDE and run the application. Access Swagger UI via the provided URLs to interact with API endpoints.
+I have used `IIS Express Profile` and its respective port in UI Project.
+
+Select `IIS Express profile` in your IDE and run the application. Access Swagger UI via the provided URLs to interact with API endpoints.
 
 Make sure you're running this API (`http://localhost:44367`), before you run the Angular UI project.
 
@@ -84,6 +86,21 @@ Make sure you're running this API (`http://localhost:44367`), before you run the
 - **Endpoint:** `DELETE /api/Contacts/DeleteContact?id={contactId}`
 - Removes a contact from the database by its ID.
 - Returns success message or error response.
+
+
+
+## Test Coverage:
+
+### Unit Tests:
+
+#### ContactsControllerTests:
+
+- **Covered CRUD operations in ContactsController:**
+  - **Get all contacts:** Tested the retrieval of all contacts.
+  - **Get contact by ID:** Verified the retrieval of a contact based on its unique identifier.
+  - **Add a new contact:** Tested the creation of a new contact.
+  - **Update an existing contact:** Verified the modification of an existing contact.
+  - **Delete a contact:** Tested the removal of a contact.
 
 
 
