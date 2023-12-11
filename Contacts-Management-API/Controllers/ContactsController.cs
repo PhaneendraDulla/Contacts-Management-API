@@ -36,55 +36,58 @@ namespace Contacts_Management_API.Controllers
             try
             {
                 var response = await _getContactsQueryHandler.GetAllContacts();
-
                 if (response.ErrorCode == -1)
                 {
                     _logger.LogInformation(response.ErrorMessage);
                     return StatusCode(StatusCodes.Status200OK, response);
                 }
-
                 return StatusCode(StatusCodes.Status200OK, response);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-
                 var response = new QueryResponseMultiple<Contact>()
                 {
                     ErrorMessage = ex.Message,
                     ErrorCode = -1
                 };
-
+                _logger.LogError(response.ErrorMessage);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
 
         [HttpGet]
         [Route("GetContactById")]
-        public async Task<ActionResult<IResponse>> GetContactById([FromQuery] int Id)
+        public async Task<ActionResult<IResponse>> GetContactById([FromQuery] int? Id)
         {
             try
             {
-                var response = await _getContactsQueryHandler.GetContactById(Id);
+                var response = new QueryResponseSingle<Contact>();
+
+                if (!Id.HasValue)
+                {
+                    response.ErrorMessage = "Id is required";
+                    response.ErrorCode = -1;
+                    _logger.LogInformation(response.ErrorMessage);
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                };
+                
+                response = (QueryResponseSingle<Contact>)await _getContactsQueryHandler.GetContactById((int)Id);
 
                 if (response.ErrorCode == -1)
                 {
                     _logger.LogInformation(response.ErrorMessage);
                     return StatusCode(StatusCodes.Status200OK, response);
                 }
-
                 return StatusCode(StatusCodes.Status200OK, response);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-
                 var response = new QueryResponseSingle<Contact>()
                 {
                     ErrorMessage = ex.Message,
                     ErrorCode = -1
                 };
-
+                _logger.LogError(response.ErrorMessage);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
@@ -95,7 +98,17 @@ namespace Contacts_Management_API.Controllers
         {
             try
             {
-                var response = await _addContactCommandHandler.AddContact(newContact);
+                var response = new CommandResponse();
+
+                if (!ModelState.IsValid)
+                {
+                    response.ErrorMessage = ModelState.ToString();
+                    response.ErrorCode = -1;
+                    _logger.LogInformation(response.ErrorMessage);
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                };
+
+                response = (CommandResponse)await _addContactCommandHandler.AddContact(newContact);
 
                 if (response.ErrorCode == -1)
                 {
@@ -107,14 +120,12 @@ namespace Contacts_Management_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-
-                var response = new QueryResponseSingle<Contact>()
+                var response = new CommandResponse()
                 {
                     ErrorMessage = ex.Message,
                     ErrorCode = -1
                 };
-
+                _logger.LogError(response.ErrorMessage);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
@@ -125,7 +136,17 @@ namespace Contacts_Management_API.Controllers
         {
             try
             {
-                var response = await _updateContactCommandHandler.UpdateContact(contact);
+                var response = new CommandResponse();
+
+                if (!ModelState.IsValid)
+                {
+                    response.ErrorMessage = ModelState.ToString();
+                    response.ErrorCode = -1;
+                    _logger.LogInformation(response.ErrorMessage);
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                };
+
+                response = (CommandResponse)await _updateContactCommandHandler.UpdateContact(contact);
 
                 if (response.ErrorCode == -1)
                 {
@@ -137,25 +158,33 @@ namespace Contacts_Management_API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.ToString());
-
-                var response = new QueryResponseSingle<Contact>()
+                var response = new CommandResponse()
                 {
                     ErrorMessage = ex.Message,
                     ErrorCode = -1
                 };
-
+                _logger.LogError(response.ErrorMessage);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
 
         [HttpDelete]
         [Route("DeleteContact")]
-        public async Task<ActionResult<IResponse>> DeleteContact([FromQuery] int Id)
+        public async Task<ActionResult<IResponse>> DeleteContact([FromQuery] int? Id)
         {
             try
             {
-                var response = await _deleteContactCommandHandler.DeleteContact(Id);
+                var response = new CommandResponse();
+
+                if (!Id.HasValue)
+                {
+                    response.ErrorMessage = "Id is required";
+                    response.ErrorCode = -1;
+                    _logger.LogInformation(response.ErrorMessage);
+                    return StatusCode(StatusCodes.Status400BadRequest, response);
+                };
+
+                response = (CommandResponse)await _deleteContactCommandHandler.DeleteContact((int)Id);
 
                 if (response.ErrorCode == -1)
                 {
@@ -166,15 +195,13 @@ namespace Contacts_Management_API.Controllers
                 return StatusCode(StatusCodes.Status200OK, response);
             }
             catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-
-                var response = new QueryResponseSingle<Contact>()
+            {               
+                var response = new CommandResponse()
                 {
                     ErrorMessage = ex.Message,
                     ErrorCode = -1
                 };
-
+                _logger.LogError(response.ErrorMessage);
                 return StatusCode(StatusCodes.Status500InternalServerError, response);
             }
         }
