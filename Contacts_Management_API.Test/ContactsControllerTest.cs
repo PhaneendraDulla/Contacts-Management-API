@@ -172,6 +172,85 @@ namespace Contacts_Management_API.Test
         }
 
         [TestMethod]
+        public async Task GetContacts_Returns_OkResult_WithValidCriteria()
+        {
+            // Arrange
+            var expectedResponse = new QueryResponseMultiple<Contact>
+            {
+                ErrorCode = 0,
+                ErrorMessage = null,
+                TotalItems = 3,
+                Items = new[]
+                {
+                    new Contact { Id = 0, FirstName = "John", LastName = "Doe", Email = "john.doe@gmail.com" },
+                    new Contact { Id = 1, FirstName = "Emily", LastName = "Johnson", Email = "emily$johnsom@outlook.edu" },
+                    new Contact { Id = 2, FirstName = "Michael", LastName = "Smith", Email = "michael-smith@hotmail.org" }
+                }
+            };
+
+            var query = new GetContactsQuery
+            {
+                FirstName = "John",
+                SortField = "LastName",
+                SortOrder = "asc",
+                Page = 1,
+                ItemsPerPage = 10
+            };
+
+            _mockGetContactsQueryHandler?
+                .Setup(handler => handler.GetContacts(query))
+                .ReturnsAsync(expectedResponse);
+
+            // Act
+            var result = await _controller.GetContacts(query);
+
+            // Assert
+            Assert.IsNotNull(result);
+            var okResult = result.Result as ObjectResult;
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+
+            var response = okResult.Value as QueryResponseMultiple<Contact>;
+            Assert.IsNotNull(response);
+            Assert.AreEqual(3, response.TotalItems);
+        }
+
+        [TestMethod]
+        public async Task GetContacts_Returns_BadRequest_WithInvalidCriteria()
+        {
+            // Arrange
+            var expectedResponse = new QueryResponseMultiple<Contact>
+            {
+                ErrorCode = -1,
+                ErrorMessage = "Invalid criteria provided",
+            };
+
+            var query = new GetContactsQuery
+            {
+                Page = -1,
+                ItemsPerPage = 0
+            };
+
+            _mockGetContactsQueryHandler?
+                .Setup(handler => handler.GetContacts(query))
+                .ReturnsAsync(expectedResponse);
+
+            // Act
+            var result = await _controller.GetContacts(query);
+
+            // Assert
+            Assert.IsNotNull(result);
+            var statusResult = result.Result as ObjectResult;
+            Assert.IsNotNull(statusResult);
+            Assert.AreEqual(200, statusResult.StatusCode);
+
+            var response = statusResult.Value as QueryResponseMultiple<Contact>;
+            Assert.IsNotNull(response);
+            Assert.AreEqual(-1, response.ErrorCode);
+            Assert.AreEqual("Invalid criteria provided", response.ErrorMessage);
+        }
+
+        [TestMethod]
         public async Task AddContact_Returns_OkResult()
         {
             // Arrange

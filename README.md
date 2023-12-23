@@ -42,6 +42,7 @@ Make sure you're running this API (`http://localhost:44367`), before you run the
 ### Models and Responses:
 - `Contact` model defines the structure of contact information, including properties like ID, first name, last name, and email. This structuring helps maintain consistency and organization in data handling.
 - Response models (`QueryResponseSingle`, `QueryResponseMultiple`, `CommandResponse`) standardize API responses. This uniformity ensures consistent and predictable communication between the API and clients, making error handling and data retrieval more manageable.
+- `GetContactsQuery` now includes fields for search, sorting, and pagination parameters.
 
 ### Swagger/OpenAPI:
 - Integration of Swagger/OpenAPI provides comprehensive documentation for the API endpoints. 
@@ -70,19 +71,24 @@ Make sure you're running this API (`http://localhost:44367`), before you run the
 - Retrieves a contact by its unique identifier.
 - Returns a single contact entity.
 
-### 3. Add a Contact:
+### 3. Get Contacts with Search, Sort, and Pagination:
+- **Endpoint:** `GET /api/Contacts/GetContacts`
+- Fetches contacts with search, sort, and pagination options.
+- Expects query parameters for search fields, page, items per page, sort field, and sort order.
+
+### 4. Add a Contact:
 - **Endpoint:** `POST /api/Contacts/AddContact`
 - Creates a new contact in the database.
 - Expects contact details in the request body.
 - Returns success message or error response.
 
-### 4. Update a Contact:
+### 5. Update a Contact:
 - **Endpoint:** `PUT /api/Contacts/UpdateContact`
 - Modifies an existing contact in the database.
 - Expects updated contact details in the request body.
 - Returns success message or error response.
 
-### 5. Delete a Contact:
+### 6. Delete a Contact:
 - **Endpoint:** `DELETE /api/Contacts/DeleteContact?id={contactId}`
 - Removes a contact from the database by its ID.
 - Returns success message or error response.
@@ -98,6 +104,7 @@ Make sure you're running this API (`http://localhost:44367`), before you run the
 - **Covered CRUD operations in ContactsController:**
   - **Get all contacts:** Tested the retrieval of all contacts.
   - **Get contact by ID:** Verified the retrieval of a contact based on its unique identifier.
+  - **Get contacts with search criteria:** Verified the retrieval of a contact based on search criteria.
   - **Add a new contact:** Tested the creation of a new contact.
   - **Update an existing contact:** Verified the modification of an existing contact.
   - **Delete a contact:** Tested the removal of a contact.
