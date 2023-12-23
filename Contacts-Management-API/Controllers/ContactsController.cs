@@ -92,6 +92,32 @@ namespace Contacts_Management_API.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetContacts")]
+        public async Task<ActionResult<IResponse>> GetContacts([FromQuery] GetContactsQuery query)
+        {
+            try
+            {
+                var response = await _getContactsQueryHandler.GetContacts(query);
+                if (response.ErrorCode == -1)
+                {
+                    _logger.LogInformation(response.ErrorMessage);
+                    return StatusCode(StatusCodes.Status200OK, response);
+                }
+                return StatusCode(StatusCodes.Status200OK, response);
+            }
+            catch (Exception ex)
+            {
+                var response = new QueryResponseMultiple<Contact>()
+                {
+                    ErrorMessage = ex.Message,
+                    ErrorCode = -1
+                };
+                _logger.LogError(response.ErrorMessage);
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+        }
+
         [HttpPost]
         [Route("AddContact")]
         public async Task<ActionResult<IResponse>> AddContact([FromBody] Contact newContact)

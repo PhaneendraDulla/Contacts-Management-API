@@ -6,5 +6,6 @@ namespace Contacts_Management_API.Handlers.QueryHandlers
     {
         Task<IResponse> GetAllContacts();
         Task<IResponse> GetContactById(int Id);
+        Task<IResponse> GetContacts(GetContactsQuery query);
     }
 }
